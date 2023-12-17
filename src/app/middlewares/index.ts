@@ -1,0 +1,1 @@
+export {pingMidleware} from './ping';

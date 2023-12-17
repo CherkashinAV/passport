@@ -13,8 +13,9 @@ export function createApp(): Express {
         .get('/ping', pingMidleware)
         .use('/v1', v1Router)
         .use((_req: Request, res: Response) => res.sendStatus(404))
-        .use((err: any) => {
+        .use((err: any, res: Response) => {
             logger.error(err);
+            res.sendStatus(500);
         });
 }
 

@@ -13,6 +13,7 @@ interface Config {
     'db.port': number;
     'db.user': string;
     'db.password': string;
+    'hash.saltRounds': number;
 }
 
 const prodConfig: Config = {
@@ -23,7 +24,8 @@ const prodConfig: Config = {
     'db.name': process.env.DB_NAME!,
     'db.port': parseInt(process.env.DB_PORT!, 10),
     'db.user': process.env.DB_USER!,
-    'db.password': process.env.DB_PASS!
+    'db.password': process.env.DB_PASS!,
+    'hash.saltRounds': 10
 };
 
 const testConfig: Config = {

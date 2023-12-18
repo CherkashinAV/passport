@@ -22,6 +22,18 @@ export async function findUserByPublicId(publicId: string): Promise<User | null>
 	return convertUserFromDBEntry(rows[0]);
 }
 
+export async function findUserByEmail(email: string): Promise<User | null> {
+	const {rows} = await dbClient.query(`--sql
+		SELECT * FROM users WHERE email = $1;
+	`, [email]);
+
+	if (!rows || !rows.length) {
+		return null;
+	}
+
+	return convertUserFromDBEntry(rows[0]);
+}
+
 export async function updateUserWithInvitation(passwordHash: string, id: number) {
 	const query = `--sql
 		UPDATE users

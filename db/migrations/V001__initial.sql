@@ -7,9 +7,9 @@ CREATE TABLE users (
 	name text NOT NULL,
 	surname text NOT NULL,
 	email text UNIQUE NOT NULL,
-	password text,
+	password text DEFAULT NULL,
 	secret_code uuid NOT NULL DEFAULT gen_random_uuid(),
-	secret_active boolean NOT NULL DEFAULT false
+	secret_active boolean NOT NULL DEFAULT false,
 	created_at timestamptz NOT NULL DEFAULT NOW(),
 	updated_at timestamptz NOT NULL DEFAULT NOW(),
 	partition text

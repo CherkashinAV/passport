@@ -1,7 +1,7 @@
 export type ApiErrorCode = |
 	'BAD_REQUEST' |
 	'NO_INVITATION_FOR_USER' |
-	'ALREADY_REGISTERED' |
+	'ALREADY_EXISTS' |
 	'INVALID_SECRET';
 
 export class ApiError extends Error {

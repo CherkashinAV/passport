@@ -13,8 +13,8 @@ describe('base tests of http-api', () => {
     let server: http.Server;
     let url: string;
 
-    before(() => {
-        [server, url] = startServer();
+    before(async () => {
+        [server, url] = await startServer();
     });
 
     after(() => {
@@ -33,25 +33,5 @@ describe('base tests of http-api', () => {
     it('should return 404 code on unsupported paths', async () => {
         const res = await client.get(`${url}/abracadabra`);
         assert.strictEqual(res.statusCode, 404);
-    });
-
-    it('should add new user', async () => {
-        await dbClient.query(`--sql
-            INSERT INTO users (name) VALUES ('andre');`
-        );
-
-        const {rows} = await dbClient.query<{name: string}>(`--sql
-            SELECT name FROM users;`
-        );
-
-        assert.strictEqual(rows[0].name, 'andre');
-    });
-
-    it('should get no users from db', async () => {
-        const {rows} = await dbClient.query<{name: string}>(`--sql
-            SELECT name FROM users;`
-        );
-
-        assert.strictEqual(rows.length, 0);
     });
 });

@@ -1,10 +1,15 @@
+import got from 'got';
 import {createApp} from '../../app/app';
-import {Express} from 'express';
 import http from 'http';
 import {AddressInfo} from 'net';
 
-export function startServer(): [http.Server, string] {
-    const app: Express = createApp();
+export type ApiRequestSender = {
+    get: (query?: Record<string, string | undefined>) => any;
+    post: (body?: Record<string, any>, query?: Record<string, string | undefined>) => any;
+};
+
+export async function startServer(): Promise<[http.Server, string]> {
+    const app = await createApp();
     const server = http.createServer(app);
     server.listen();
 
@@ -16,4 +21,29 @@ export function startServer(): [http.Server, string] {
 
 export async function stopServer(server: http.Server) {
     server.close();
+}
+
+const httpClient = got.extend({
+    throwHttpErrors: false
+})
+
+export function apiRequestFactory(url: URL, responseType: 'string' | 'json') {
+    return {
+        get : async (query?: Record<string, string | undefined>) => {
+            return httpClient.get(url, {
+                searchParams: query,
+                responseType: responseType === 'string' ? undefined : responseType,
+                retry: 0
+            });
+        },
+
+        post: async (body?: Record<string, any>, query?: Record<string, string | undefined>) => {
+            return httpClient.post(url, {
+                json: body,
+                searchParams: query,
+                responseType: responseType === 'string' ? undefined : responseType,
+                retry: 0
+            });
+        }
+    }
 }

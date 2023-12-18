@@ -14,10 +14,6 @@ exportVar = export
 
 DB_CONNECTION_STRING = postgres://$(DB_USER):$(DB_PASS)@127.0.0.1:$(DB_PORT)
 
-.PHONY: info
-info:
-	@echo $(SERVICE_SLUG)
-
 .PHONY: deps
 deps:
 	npm ci
@@ -110,7 +106,7 @@ db.create-test-db:
 db.init-testing-db: build
 db.init-testing-db: db.create-test-db
 db.init-testing-db: 
-	@echo "Creating clear_database function..."
+	@echo "Using clear_database function..."
 	@psql $(DB_CONNECTION_STRING)/$(TEST_DB_NAME) -c $(create-empty-func)
 		
 

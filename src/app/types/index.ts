@@ -12,3 +12,13 @@ export interface User {
 	updatedAt: Date,
 	partition: string
 };
+
+export interface RefreshSession {
+	id: number;
+	userId: string;
+	refreshToken: string,
+	userAgent: string;
+	fingerprint: string;
+	expiresIn: number,
+	createdAt: Date;
+};

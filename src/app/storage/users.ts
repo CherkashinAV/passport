@@ -22,10 +22,11 @@ export async function findUserByPublicId(publicId: string): Promise<User | null>
 	return convertUserFromDBEntry(rows[0]);
 }
 
-export async function findUserByEmail(email: string): Promise<User | null> {
+export async function findUserByEmail(email: string, partition: string): Promise<User | null> {
 	const {rows} = await dbClient.query(`--sql
-		SELECT * FROM users WHERE email = $1;
-	`, [email]);
+		SELECT * FROM users
+		WHERE email = $1 AND partition = $2;
+	`, [email, partition]);
 
 	if (!rows || !rows.length) {
 		return null;

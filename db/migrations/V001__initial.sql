@@ -6,7 +6,7 @@ CREATE TABLE users (
 	role text,
 	name text NOT NULL,
 	surname text NOT NULL,
-	email text UNIQUE NOT NULL,
+	email text NOT NULL,
 	password text DEFAULT NULL,
 	secret_code uuid NOT NULL DEFAULT gen_random_uuid(),
 	secret_active boolean NOT NULL DEFAULT false,
@@ -15,7 +15,7 @@ CREATE TABLE users (
 	partition text
 );
 
-CREATE INDEX users_email_index ON users (email);
+CREATE UNIQUE INDEX users_email_index ON users (email, partition);
 
 CREATE TABLE refresh_sessions (
 	id SERIAL PRIMARY KEY,
@@ -23,6 +23,6 @@ CREATE TABLE refresh_sessions (
 	refresh_token uuid NOT NULL,
 	user_agent text NOT NULL,
 	fingerprint text NOT NULL,
-	expires_in bigint NOT NULL,
+	expires_in timestamptz NOT NULL,
 	createdAt timestamptz NOT NULL DEFAULT NOW()
 );

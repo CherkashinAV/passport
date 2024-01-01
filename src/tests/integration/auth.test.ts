@@ -1,7 +1,6 @@
 import http from 'http';
 import sinon from 'sinon';
 import {ApiRequestSender, apiRequestFactory, startServer, stopServer} from './test-server';
-import {jwtManager} from '../../app/lib/jwt';
 import {clear_db, registerUser} from '../db-utils';
 import assert from 'assert';
 import {createNewRefreshSession} from '../../app/storage/refreshSessions';

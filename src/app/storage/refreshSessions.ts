@@ -35,3 +35,15 @@ export async function createNewRefreshSession(args: {
 
 	return true;
 }
+
+export async function deleteSession(args: {
+	userId: string,
+	fingerprint: string
+}) {
+	const query = `--sql
+		DELETE FROM refresh_sessions
+		WHERE user_id = $1 AND fingerprint = $2
+	`;
+
+	await dbClient.query(query, [args.userId, args.fingerprint]);
+}

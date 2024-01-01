@@ -5,7 +5,9 @@ export type ApiErrorCode = |
 	'INVALID_SECRET' |
 	'NOT_FOUND' |
 	'INVALID_PASSWORD' |
-	'NEED_PASSWORD_RESET';
+	'NEED_PASSWORD_RESET' |
+	'INVALID_TOKEN' |
+	'TOKEN_EXPIRED';
 
 export class ApiError extends Error {
 	code: ApiErrorCode;

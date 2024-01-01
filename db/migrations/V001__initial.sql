@@ -3,7 +3,7 @@ CREATE EXTENSION pgcrypto;
 CREATE TABLE users (
 	id SERIAL PRIMARY KEY,
 	public_id uuid NOT NULL UNIQUE DEFAULT gen_random_uuid(),
-	role text,
+	role text DEFAULT 'default',
 	name text NOT NULL,
 	surname text NOT NULL,
 	email text NOT NULL,

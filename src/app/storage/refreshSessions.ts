@@ -29,7 +29,7 @@ export async function createNewRefreshSession(args: {
 	`;
 	try {
 		await dbClient.query(query, [args.userId, args.userAgent, args.fingerprint, expiresIn, args.refreshToken]);
-	} catch{
+	} catch {
 		return false;
 	}
 

@@ -5,9 +5,8 @@ import {clear_db} from '../db-utils';
 import {ApiRequestSender, apiRequestFactory, startServer, stopServer} from './test-server';
 import {createNewUserRecord} from '../../app/storage/users';
 import {jwtManager} from '../../app/lib/jwt';
-import {timeout} from '../../app/helpers';
 
-describe.only('/v1/register', () => {
+describe('/v1/login', () => {
 	let server: http.Server;
     let url: string;
 	let httpClient: ApiRequestSender
@@ -131,7 +130,7 @@ describe.only('/v1/register', () => {
 			});
 
 			assert.deepStrictEqual(res.headers['set-cookie'], [
-				'refreshToken=aaaaaaaa-f625-41ca-a353-068d6ed70fc5; Max-Age=921600; Path=/v1/validate_token; Expires=Thu, 28 Dec 2023 04:00:00 GMT'
+				'refreshToken=aaaaaaaa-f625-41ca-a353-068d6ed70fc5; Max-Age=921600; Path=/v1/auth; Expires=Thu, 28 Dec 2023 04:00:00 GMT'
 			]);
 		});
 

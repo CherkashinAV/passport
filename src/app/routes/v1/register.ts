@@ -14,7 +14,7 @@ const bodySchema = z.object({
 	invitationCode: z.string().uuid().optional(),
 })
 
-export const register = asyncMiddleware(async (req: Request, res: Response) => {
+export const registerHandler = asyncMiddleware(async (req: Request, res: Response) => {
 	const validationResult = bodySchema.safeParse(req.body);
 
 	if (!validationResult.success) {
@@ -53,7 +53,7 @@ export const register = asyncMiddleware(async (req: Request, res: Response) => {
 	}
 
 	if (user) {
-		throw new ApiError('ALREADY_EXISTS', 409, 'User already registered');
+		throw new ApiError('ALREADY_EXISTS', 409, 'Registration: User already registered');
 	}
 
 	const createResultOk = await createNewUserRecord({

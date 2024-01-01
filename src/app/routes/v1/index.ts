@@ -1,14 +1,16 @@
 import {NextFunction, Request, Response, Router} from 'express';
 import bodyParser from 'body-parser';
-import {register} from './register';
 import {ApiError} from './api-error';
 import {logger} from '../../lib/logger';
-import {login} from './login';
+import {registerHandler} from './register';
+import {loginHandler} from './login';
+import {authHandler} from './auth';
 
 export const v1Router: Router = Router()
 	.use(bodyParser.json())
-	.post('/register', register)
-	.post('/login', login)
+	.post('/register', registerHandler)
+	.post('/login', loginHandler)
+	.post('/auth', authHandler)
 	.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 		if (error instanceof ApiError) {
 			const errorBody = {
@@ -19,7 +21,6 @@ export const v1Router: Router = Router()
 			logger.error(error.message);
 			res.status(error.status).json(errorBody);
 		} else {
-			console.error(error);
 			next(error);
 		}
 	});

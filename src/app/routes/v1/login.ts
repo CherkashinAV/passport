@@ -16,7 +16,7 @@ const bodySchema = z.object({
 	fingerprint: z.string().uuid()
 })
 
-export const login = asyncMiddleware(async (req: Request, res: Response) => {
+export const loginHandler = asyncMiddleware(async (req: Request, res: Response) => {
 	const validationResult = bodySchema.safeParse(req.body);
 
 	if (!validationResult.success) {
@@ -66,7 +66,7 @@ export const login = asyncMiddleware(async (req: Request, res: Response) => {
 		userId: user.publicId
 	});
 
-	res.cookie('refreshToken', refreshToken, {maxAge: config['refreshSessions.Ttl'], path: '/v1/validate_token'});
+	res.cookie('refreshToken', refreshToken, {maxAge: config['refreshSessions.Ttl'], path: '/v1/auth'});
 
 	res.status(200).json({
 		accessToken,

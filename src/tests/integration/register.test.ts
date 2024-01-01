@@ -117,7 +117,7 @@ describe('/v1/register', () => {
 				partition: 'global',
 				password: rows[0].password,
 				public_id: rows[0].public_id,
-				role: null,
+				role: 'default',
 				secret_active: false,
 				secret_code: rows[0].secret_code,
 				created_at: rows[0].created_at,
@@ -143,7 +143,7 @@ describe('/v1/register', () => {
 				partition: '<partition>',
 				password: rows[0].password,
 				public_id: rows[0].public_id,
-				role: null,
+				role: 'default',
 				secret_active: false,
 				secret_code: rows[0].secret_code,
 				created_at: rows[0].created_at,
@@ -163,7 +163,7 @@ describe('/v1/register', () => {
 				assert.strictEqual(res.statusCode, 409);
 				assert.deepStrictEqual(res.body, {
 					code: 'ALREADY_EXISTS',
-					message: 'User already registered'
+					message: 'Registration: User already registered'
 				});
 			}
 		});
@@ -192,7 +192,7 @@ describe('/v1/register', () => {
 				partition: 'global',
 				password: rows[0].password,
 				public_id: rows[0].public_id,
-				role: null,
+				role: 'default',
 				secret_active: false,
 				secret_code: rows[0].secret_code,
 				created_at: rows[0].created_at,
@@ -210,7 +210,7 @@ describe('/v1/register', () => {
 
 			assert.deepStrictEqual(res.body, {
 				code: 'NO_INVITATION_FOR_USER',
-				message: 'No invitation for current user'
+				message: 'Registration: No invitation for current user'
 			});
 		});
 
@@ -226,7 +226,7 @@ describe('/v1/register', () => {
 				assert.strictEqual(res.statusCode, 409);
 				assert.deepStrictEqual(res.body, {
 					code: 'ALREADY_EXISTS',
-					message: 'User already registered'
+					message: 'Registration: User already registered'
 				});
 			}
 		});
@@ -245,7 +245,7 @@ describe('/v1/register', () => {
 			assert.strictEqual(res.statusCode, 401);
 			assert.deepStrictEqual(res.body, {
 				code: 'INVALID_SECRET',
-				message: 'Invalid secret code for invitation'
+				message: 'Registration: Invalid secret code for invitation'
 			});
 		});
 

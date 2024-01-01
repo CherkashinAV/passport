@@ -17,7 +17,7 @@ export async function getUserRefreshSessions(userUid: string): Promise<RefreshSe
 
 export async function createNewRefreshSession(args: {
 	userId: string,
-	userAgent: string,
+	userAgent?: string,
 	fingerprint: string,
 	refreshToken: string
 }) {
@@ -25,13 +25,13 @@ export async function createNewRefreshSession(args: {
 	const query = `--sql
 		INSERT INTO refresh_sessions
 		(user_id, user_agent, fingerprint, expires_in, refresh_token)
-		VALUES ($1, $2, $3, $4, gen_random_uuid())
+		VALUES ($1, $2, $3, $4, $5)
 	`;
 	try {
 		await dbClient.query(query, [args.userId, args.userAgent, args.fingerprint, expiresIn, args.refreshToken]);
-	} catch {
-		return null;
+	} catch{
+		return false;
 	}
 
-	return expiresIn;
+	return true;
 }

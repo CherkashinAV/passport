@@ -23,6 +23,6 @@ CREATE TABLE refresh_sessions (
 	refresh_token uuid NOT NULL,
 	user_agent text NOT NULL,
 	fingerprint text NOT NULL,
-	expires_in timestamptz NOT NULL,
+	expires_in bigint NOT NULL,
 	createdAt timestamptz NOT NULL DEFAULT NOW()
 );

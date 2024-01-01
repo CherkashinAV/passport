@@ -19,7 +19,7 @@ export const v1Router: Router = Router()
 			logger.error(error.message);
 			res.status(error.status).json(errorBody);
 		} else {
-			console.log('here')
+			console.error(error);
 			next(error);
 		}
 	});

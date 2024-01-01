@@ -24,34 +24,40 @@ export const login = asyncMiddleware(async (req: Request, res: Response) => {
 	}
 
 	const body = validationResult.data;
-	const partition = req.query.partition as string;
+	const partition = req.query.partition as string ?? 'global';
 	const user = await findUserByEmail(body.email, partition);
 
 	if (!user) {
-		throw new ApiError('NOT_FOUND', 404, 'No such users registered.')
+		throw new ApiError('NOT_FOUND', 404, 'Login: No such users registered.')
 	}
 
-	if (!hashManager.validate(user.password!, body.password)) {
-		throw new ApiError('INVALID_PASSWORD', 401, 'Invalid password for current user');
+	if (!(await hashManager.validate(user.password!, body.password))) {
+		throw new ApiError('INVALID_PASSWORD', 401, 'Login: Invalid password for current user.');
 	}
 
 	const sessions = await getUserRefreshSessions(user.publicId);
 
-	if (sessions?.length && sessions.length > config['refreshSessions.maxAmount']) {
-		throw new ApiError('NEED_PASSWORD_RESET', 400, 'Sessions limit exceeded');
+	if (sessions) {
+		if (sessions.length >= config['refreshSessions.maxAmount']) {
+			throw new ApiError('NEED_PASSWORD_RESET', 400, 'Login: Sessions limit exceeded.');
+		}
+
+		if (sessions.find((session) => session.fingerprint === body.fingerprint)) {
+			throw new ApiError('ALREADY_EXISTS', 409, 'Login: Session already exists.');
+		}
 	}
 
 	const refreshToken = randomUUID();
 
-	const maxAge = await createNewRefreshSession({
+	const creationResult = await createNewRefreshSession({
 		userId: user.publicId,
-		fingerprint: '',
-		userAgent: '',
+		fingerprint: body.fingerprint,
+		userAgent: req.headers['user-agent'] ?? 'none',
 		refreshToken
 	});
 
-	if (!maxAge) {
-		throw new Error('Login: create refreshSession failure.')
+	if (!creationResult) {
+		throw new Error('Login: create refreshSession failure.');
 	}
 
 	const accessToken = jwtManager.generateJWTToken({
@@ -60,10 +66,10 @@ export const login = asyncMiddleware(async (req: Request, res: Response) => {
 		userId: user.publicId
 	});
 
-	res.cookie('refreshToken', refreshToken, {maxAge, path: '/v1/validate_token'})
+	res.cookie('refreshToken', refreshToken, {maxAge: config['refreshSessions.Ttl'], path: '/v1/validate_token'});
 
 	res.status(200).json({
 		accessToken,
 		refreshToken
-	})
+	});
 });

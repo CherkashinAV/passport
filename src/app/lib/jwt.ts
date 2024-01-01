@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import {config} from '../config';
 
-class JWTManager {
+export class JWTManager {
 	generateJWTToken(payload: {
 		userId: string,
 		expiresIn: number,

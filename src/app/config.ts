@@ -47,7 +47,8 @@ const devConfig: Config = {
 const ciConfig: Config = {
     ...prodConfig,
     'logger.disable': true,
-    'db.name': process.env.TEST_DB_NAME!
+    'db.name': process.env.TEST_DB_NAME!,
+    'refreshSessions.maxAmount': 2,
 };
 
 const configsByEnv = new Map<string, Readonly<Config>>([

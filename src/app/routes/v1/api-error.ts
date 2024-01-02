@@ -7,7 +7,8 @@ export type ApiErrorCode = |
 	'INVALID_PASSWORD' |
 	'NEED_PASSWORD_RESET' |
 	'INVALID_TOKEN' |
-	'TOKEN_EXPIRED';
+	'TOKEN_EXPIRED' |
+	'NOT_ENOUGH_RIGHTS';
 
 export class ApiError extends Error {
 	code: ApiErrorCode;

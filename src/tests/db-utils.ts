@@ -38,11 +38,12 @@ export async function registerUser(args: {
 	passwordHash: string,
 	email: string,
 	partition: string,
-	publicId: string
+	publicId: string,
+	role?: string
 }) {
 	const query = `--sql
-		INSERT INTO users (name, surname, email, password, partition, public_id)
-		VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO users (name, surname, email, password, partition, public_id, role)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
 	`;
 
 	try {
@@ -52,9 +53,10 @@ export async function registerUser(args: {
 			args.email,
 			args.passwordHash,
 			args.partition,
-			args.publicId
+			args.publicId,
+			args.role ?? 'default'
 		]);
-	} catch {
+	} catch (err){
 		return false;
 	}
 

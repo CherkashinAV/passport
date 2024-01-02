@@ -65,3 +65,32 @@ export async function createNewUserRecord(args: CreateNewUserRecordArgs) {
 
 	return true;
 }
+
+export async function insertInvitation(args: {
+	name: string,
+	surname: string,
+	email: string,
+	partition: string,
+	role: string
+}) {
+	try {
+		const {rows} = await dbClient.query<{secret_code: string}>(`--sql
+			INSERT INTO users
+			(name, surname, email, secret_active, partition, role)
+			VALUES ($1, $2, $3, $4, $5, $6)
+			RETURNING secret_code;
+		`, [
+			args.name,
+			args.surname,
+			args.email,
+			true,
+			args.partition,
+			args.role
+		]);
+
+		return rows[0].secret_code;
+	} catch (err){
+		console.error(err)
+		return null
+	}
+}

@@ -5,7 +5,7 @@ import {clear_db, registerUser} from '../db-utils';
 import {createNewRefreshSession} from '../../app/storage/refreshSessions';
 import {dbClient} from '../../app/lib/db-client';
 
-describe('/v1/login', () => {
+describe('/v1/logout', () => {
 	let server: http.Server;
     let url: string;
 	let httpClient: ApiRequestSender

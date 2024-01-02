@@ -5,7 +5,7 @@ import {clear_db, registerUser} from '../db-utils';
 import assert from 'assert';
 import {createNewRefreshSession} from '../../app/storage/refreshSessions';
 
-describe('/v1/login', () => {
+describe('/v1/auth', () => {
 	let server: http.Server;
     let url: string;
 	let httpClient: ApiRequestSender

@@ -8,7 +8,7 @@ import {createNewRefreshSession} from '../../app/storage/refreshSessions';
 import {dbClient} from '../../app/lib/db-client';
 import {timeout} from '../../app/helpers';
 
-describe('/v1/login', () => {
+describe('/v1/refresh_tokens`', () => {
 	let server: http.Server;
     let url: string;
 	let httpClient: ApiRequestSender

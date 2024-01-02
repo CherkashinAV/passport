@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import z from 'zod';
-import {formatZodError, nameValidator, passwordValidator} from './validators';
+import {formatZodError, nameValidator, passwordValidator, surnameValidator} from './validators';
 import {ApiError} from './api-error';
 import {createNewUserRecord, findUserByEmail, findUserByPublicId, updateUserWithInvitation} from '../../storage/users';
 import {hashManager} from '../../lib/hash';
@@ -10,9 +10,9 @@ const bodySchema = z.object({
 	email: z.string().email(),
 	password: passwordValidator,
 	name: nameValidator.optional(),
-	surname: nameValidator.optional(),
+	surname: surnameValidator.optional(),
 	invitationCode: z.string().uuid().optional(),
-})
+});
 
 export const registerHandler = asyncMiddleware(async (req: Request, res: Response) => {
 	const validationResult = bodySchema.safeParse(req.body);

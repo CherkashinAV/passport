@@ -3,13 +3,12 @@ import http from 'http';
 import sinon, {SinonExpectation, SinonFakeTimers} from 'sinon';
 import {clear_db, registerUser} from '../db-utils';
 import {ApiRequestSender, apiRequestFactory, startServer, stopServer} from './test-server';
-import {createNewUserRecord} from '../../app/storage/users';
 import {jwtManager} from '../../app/lib/jwt';
 import {createNewRefreshSession} from '../../app/storage/refreshSessions';
 import {dbClient} from '../../app/lib/db-client';
 import {timeout} from '../../app/helpers';
 
-describe.only('/v1/login', () => {
+describe('/v1/login', () => {
 	let server: http.Server;
     let url: string;
 	let httpClient: ApiRequestSender
@@ -121,6 +120,9 @@ describe.only('/v1/login', () => {
 				user_agent: 'got (https://github.com/sindresorhus/got)',
 				user_id: 'aaaaaaaa-f625-41ca-a353-068d6ed70fc5'
 			});
+			assert.deepStrictEqual(res.headers['set-cookie'], [
+				'refreshToken=bbbbbbbb-f625-41ca-a353-068d6ed70fc5; Max-Age=1; Path=/v1/auth; Expires=Sun, 17 Dec 2023 12:00:01 GMT'
+			]);
 		});
 
 		it('should respond with 404 when no sessions for user in db', async () => {

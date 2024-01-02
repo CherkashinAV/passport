@@ -131,7 +131,7 @@ describe('/v1/login', () => {
 			});
 
 			assert.deepStrictEqual(res.headers['set-cookie'], [
-				'refreshToken=aaaaaaaa-f625-41ca-a353-068d6ed70fc5; Max-Age=921600; Path=/v1/auth; Expires=Thu, 28 Dec 2023 04:00:00 GMT'
+				'refreshToken=aaaaaaaa-f625-41ca-a353-068d6ed70fc5; Max-Age=1; Path=/v1/auth; Expires=Sun, 17 Dec 2023 12:00:01 GMT'
 			]);
 		});
 

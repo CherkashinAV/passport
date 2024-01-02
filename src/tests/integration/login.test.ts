@@ -36,6 +36,7 @@ describe('/v1/login', () => {
 	after(async () => {
 		await stopServer(server);
 		clock.restore();
+		sinon.restore()
 	});
 
 	beforeEach(async () => {

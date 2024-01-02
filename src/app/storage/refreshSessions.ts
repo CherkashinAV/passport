@@ -15,6 +15,21 @@ export async function getUserRefreshSessions(userUid: string): Promise<RefreshSe
 	return rows.map((row) => convertRefreshSessionFromDBEntry(row));
 }
 
+export async function getRefreshSessionByRefreshToken(
+	refreshToken: string,
+	fingerprint: string
+): Promise<RefreshSession | null> {
+	const {rows} = await dbClient.query(`--sql
+		SELECT * FROM refresh_sessions WHERE refresh_token = $1 and fingerprint = $2;
+	`, [refreshToken, fingerprint]);
+
+	if (!rows || !rows.length) {
+		return null;
+	}
+
+	return convertRefreshSessionFromDBEntry(rows[0]);
+}
+
 export async function createNewRefreshSession(args: {
 	userId: string,
 	userAgent?: string,
@@ -29,7 +44,7 @@ export async function createNewRefreshSession(args: {
 	`;
 	try {
 		await dbClient.query(query, [args.userId, args.userAgent, args.fingerprint, expiresIn, args.refreshToken]);
-	} catch {
+	} catch (error){
 		return false;
 	}
 

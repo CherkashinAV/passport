@@ -76,26 +76,6 @@ describe('/v1/register', () => {
 			assert.strictEqual(res.body.code, 'BAD_REQUEST');
 			assert.strictEqual(res.body.message, 'password:Password must be at least 6 symbols')
 		});
-
-		it('should throw 400 if name was not provided', async () => {
-			const res = await httpClient.post({
-				...defaultBody,
-				name: undefined
-			});
-
-			assert.strictEqual(res.statusCode, 400);
-			assert.strictEqual(res.body.code, 'BAD_REQUEST');
-		});
-
-		it('should throw 400 if surname was not provided', async () => {
-			const res = await httpClient.post({
-				...defaultBody,
-				surname: undefined
-			});
-
-			assert.strictEqual(res.statusCode, 400);
-			assert.strictEqual(res.body.code, 'BAD_REQUEST');
-		});
 	});
 
 	describe('without invitation code', () => {
@@ -148,6 +128,32 @@ describe('/v1/register', () => {
 				secret_code: rows[0].secret_code,
 				created_at: rows[0].created_at,
 				updated_at: rows[0].updated_at
+			});
+		});
+
+		it('should respond 400 when name is missing', async () => {
+			const res = await httpClient.post({
+				...defaultBody,
+				name: undefined
+			});
+
+			assert.strictEqual(res.statusCode, 400);
+			assert.deepStrictEqual(res.body, {
+				code: 'BAD_REQUEST',
+				message: 'Registration: Name or surname is missing'
+			});
+		});
+
+		it('should respond 400 when surname is missing', async () => {
+			const res = await httpClient.post({
+				...defaultBody,
+				surname: undefined
+			});
+
+			assert.strictEqual(res.statusCode, 400);
+			assert.deepStrictEqual(res.body, {
+				code: 'BAD_REQUEST',
+				message: 'Registration: Name or surname is missing'
 			});
 		});
 
@@ -259,6 +265,6 @@ describe('/v1/register', () => {
 
 			assert.strictEqual(res.statusCode, 500);
 			assert.deepStrictEqual(res.body, 'Internal Server Error');
-		})
+		});
 	});
 })

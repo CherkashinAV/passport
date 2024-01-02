@@ -49,6 +49,7 @@ const ciConfig: Config = {
     'logger.disable': true,
     'db.name': process.env.TEST_DB_NAME!,
     'refreshSessions.maxAmount': 2,
+    'refreshSessions.Ttl': 1000
 };
 
 const configsByEnv = new Map<string, Readonly<Config>>([

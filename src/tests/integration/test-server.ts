@@ -23,11 +23,12 @@ export async function stopServer(server: http.Server) {
     server.close();
 }
 
-const httpClient = got.extend({
-    throwHttpErrors: false
-})
+export function apiRequestFactory(url: URL, responseType: 'string' | 'json', options?: any) {
+    const httpClient = got.extend({
+        throwHttpErrors: false,
+        ...options
+    })
 
-export function apiRequestFactory(url: URL, responseType: 'string' | 'json') {
     return {
         get : async (query?: Record<string, string | undefined>) => {
             return httpClient.get(url, {
@@ -42,7 +43,7 @@ export function apiRequestFactory(url: URL, responseType: 'string' | 'json') {
                 json: body,
                 searchParams: query,
                 responseType: responseType === 'string' ? undefined : responseType,
-                retry: 0
+                retry: 0,
             });
         }
     }

@@ -1,11 +1,13 @@
 import {NextFunction, Request, Response, Router} from 'express';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import {ApiError} from './api-error';
 import {logger} from '../../lib/logger';
 import {registerHandler} from './register';
 import {loginHandler} from './login';
 import {authHandler} from './auth';
 import {logoutHandler} from './logout';
+import {refreshTokensHandler} from './refresh-tokens';
 
 export const v1Router: Router = Router()
 	.use(bodyParser.json())
@@ -13,6 +15,8 @@ export const v1Router: Router = Router()
 	.post('/login', loginHandler)
 	.post('/logout', logoutHandler)
 	.post('/auth', authHandler)
+	.use(cookieParser())
+	.post('/refresh_tokens', refreshTokensHandler)
 	.use((error: Error, req: Request, res: Response, next: NextFunction) => {
 		if (error instanceof ApiError) {
 			const errorBody = {

@@ -9,8 +9,8 @@ import asyncMiddleware from 'middleware-async';
 const bodySchema = z.object({
 	email: z.string().email(),
 	password: passwordValidator,
-	name: nameValidator,
-	surname: nameValidator,
+	name: nameValidator.optional(),
+	surname: nameValidator.optional(),
 	invitationCode: z.string().uuid().optional(),
 })
 
@@ -54,6 +54,10 @@ export const registerHandler = asyncMiddleware(async (req: Request, res: Respons
 
 	if (user) {
 		throw new ApiError('ALREADY_EXISTS', 409, 'Registration: User already registered');
+	}
+
+	if (!body.name || !body.surname) {
+		throw new ApiError('BAD_REQUEST', 400, 'Registration: Name or surname is missing');
 	}
 
 	const createResultOk = await createNewUserRecord({

@@ -24,5 +24,5 @@ CREATE TABLE refresh_sessions (
 	user_agent text NOT NULL,
 	fingerprint text NOT NULL,
 	expires_in bigint NOT NULL,
-	createdAt timestamptz NOT NULL DEFAULT NOW()
+	created_at timestamptz NOT NULL DEFAULT NOW()
 );

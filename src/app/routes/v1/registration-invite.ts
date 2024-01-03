@@ -24,6 +24,7 @@ export const registrationInviteHandler = asyncMiddleware(async (req: Request, re
 
 	const body = validationResult.data;
 
+	//TODO: hide into token_verify middleware
 	const verifyTokenResult = jwtManager.verifyJWTToken(body.accessToken);
 
 	if (!verifyTokenResult.ok) {

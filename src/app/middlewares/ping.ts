@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from 'express';
 
-export function pingMidleware(req: Request, res: Response, next: NextFunction) {
+export function pingMidleware(_req: Request, res: Response, _next: NextFunction) {
     res.send();
 }

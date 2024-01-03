@@ -1,9 +1,8 @@
 import express, {Application, NextFunction, Request, Response} from 'express';
-import {pingMidleware} from './middlewares';
+import {pingMidleware, loggerMiddleware} from './middlewares';
 import {v1Router} from './routes/v1';
 import {env, config} from './config';
 import {logger} from './lib/logger';
-import {loggerMiddleware} from './middlewares/logger';
 
 export async function createApp(): Promise<Application> {
     const app: Application = express();

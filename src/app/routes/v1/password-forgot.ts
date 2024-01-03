@@ -34,6 +34,10 @@ export const passwordForgotHandler = asyncMiddleware(async (req: Request, res: R
 		secret: secretCode
 	});
 
+	if (!storeSecretResult) {
+		throw new Error('PasswordForgot: failed to store new secret')
+	}
+
 	const resetUrl = new URL(`/${secretCode}`, body.linkToResetForm);
 
 	//TODO: send email with restore link

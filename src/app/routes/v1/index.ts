@@ -10,6 +10,7 @@ import {logoutHandler} from './logout';
 import {refreshTokensHandler} from './refresh-tokens';
 import {registrationInviteHandler} from './registration-invite';
 import {passwordForgotHandler} from './password-forgot';
+import {resetPasswordHandler} from './reset-password';
 
 export const v1Router: Router = Router()
 	.use(bodyParser.json())
@@ -19,6 +20,7 @@ export const v1Router: Router = Router()
 	.post('/auth', authHandler)
 	.post('/registration_invite', registrationInviteHandler)
 	.post('/password_forgot', passwordForgotHandler)
+	.post('/reset_password', resetPasswordHandler)
 	.use(cookieParser())
 	.post('/refresh_tokens', refreshTokensHandler)
 	.use((error: Error, req: Request, res: Response, next: NextFunction) => {

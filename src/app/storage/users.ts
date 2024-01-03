@@ -113,3 +113,22 @@ export async function storeNewSecret(args: {
 
 	return true;
 }
+
+export async function updatePassword(args: {
+	userId: string,
+	passwordHash: string
+}) {
+	const query = `--sql
+		UPDATE users
+		SET password = $1, secret_active = false
+		WHERE public_id = $2
+	`;
+
+	try {
+		await dbClient.query(query, [args.passwordHash, args.userId]);
+	} catch {
+		return false;
+	}
+
+	return true;
+}

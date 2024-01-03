@@ -94,3 +94,22 @@ export async function insertInvitation(args: {
 		return null
 	}
 }
+
+export async function storeNewSecret(args: {
+	userId: string,
+	secret: string
+}) {
+	const query = `--sql
+		UPDATE users
+		SET secret_code = $1, secret_active = true
+		WHERE public_id = $2
+	`;
+
+	try {
+		await dbClient.query(query, [args.secret, args.userId]);
+	} catch {
+		return false;
+	}
+
+	return true;
+}

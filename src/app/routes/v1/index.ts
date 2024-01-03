@@ -9,6 +9,7 @@ import {authHandler} from './auth';
 import {logoutHandler} from './logout';
 import {refreshTokensHandler} from './refresh-tokens';
 import {registrationInviteHandler} from './registration-invite';
+import {passwordForgotHandler} from './password-forgot';
 
 export const v1Router: Router = Router()
 	.use(bodyParser.json())
@@ -17,6 +18,7 @@ export const v1Router: Router = Router()
 	.post('/logout', logoutHandler)
 	.post('/auth', authHandler)
 	.post('/registration_invite', registrationInviteHandler)
+	.post('/password_forgot', passwordForgotHandler)
 	.use(cookieParser())
 	.post('/refresh_tokens', refreshTokensHandler)
 	.use((error: Error, req: Request, res: Response, next: NextFunction) => {

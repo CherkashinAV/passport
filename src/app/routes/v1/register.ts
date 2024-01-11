@@ -7,70 +7,70 @@ import {hashManager} from '../../lib/hash';
 import asyncMiddleware from 'middleware-async';
 
 const bodySchema = z.object({
-	email: z.string().email(),
-	password: passwordValidator,
-	name: nameValidator.optional(),
-	surname: surnameValidator.optional(),
-	invitationCode: z.string().uuid().optional(),
+    email: z.string().email(),
+    password: passwordValidator,
+    name: nameValidator.optional(),
+    surname: surnameValidator.optional(),
+    invitationCode: z.string().uuid().optional()
 });
 
 export const registerHandler = asyncMiddleware(async (req: Request, res: Response) => {
-	const validationResult = bodySchema.safeParse(req.body);
+    const validationResult = bodySchema.safeParse(req.body);
 
-	if (!validationResult.success) {
-		throw new ApiError('BAD_REQUEST', 400, formatZodError(validationResult.error));
-	}
+    if (!validationResult.success) {
+        throw new ApiError('BAD_REQUEST', 400, formatZodError(validationResult.error));
+    }
 
-	const body = validationResult.data;
-	const partition = req.query.partition as string ?? 'global';
-	const user = await findUserByEmail(body.email, partition);
-	const passwordHash = await hashManager.encode(body.password);
-	if (body.invitationCode) {
-		if (!user) {
-			throw new ApiError('NO_INVITATION_FOR_USER', 400, 'Registration: No invitation for current user');
-		}
+    const body = validationResult.data;
+    const partition = (req.query.partition as string) ?? 'global';
+    const user = await findUserByEmail(body.email, partition);
+    const passwordHash = await hashManager.encode(body.password);
+    if (body.invitationCode) {
+        if (!user) {
+            throw new ApiError('NO_INVITATION_FOR_USER', 400, 'Registration: No invitation for current user');
+        }
 
-		if (user.password) {
-			throw new ApiError('ALREADY_EXISTS', 409, 'Registration: User already registered');
-		}
+        if (user.password) {
+            throw new ApiError('ALREADY_EXISTS', 409, 'Registration: User already registered');
+        }
 
-		if (!user.secretActive) {
-			throw new Error('Registration: secret not active in with invitation stage.');
-		}
+        if (!user.secretActive) {
+            throw new Error('Registration: secret not active in with invitation stage.');
+        }
 
-		if (user.secretCode !== body.invitationCode) {
-			throw new ApiError('INVALID_SECRET', 401, 'Registration: Invalid secret code for invitation');
-		}
+        if (user.secretCode !== body.invitationCode) {
+            throw new ApiError('INVALID_SECRET', 401, 'Registration: Invalid secret code for invitation');
+        }
 
-		const updateResultOk = await updateUserWithInvitation(passwordHash, user.id);
+        const updateResultOk = await updateUserWithInvitation(passwordHash, user.id);
 
-		if (!updateResultOk) {
-			throw new Error('Registration: update table failure.')
-		}
+        if (!updateResultOk) {
+            throw new Error('Registration: update table failure.');
+        }
 
-		res.status(200).json({status: 'OK'});
-		return;
-	}
+        res.status(200).json({status: 'OK'});
+        return;
+    }
 
-	if (user) {
-		throw new ApiError('ALREADY_EXISTS', 409, 'Registration: User already registered');
-	}
+    if (user) {
+        throw new ApiError('ALREADY_EXISTS', 409, 'Registration: User already registered');
+    }
 
-	if (!body.name || !body.surname) {
-		throw new ApiError('BAD_REQUEST', 400, 'Registration: Name or surname is missing');
-	}
+    if (!body.name || !body.surname) {
+        throw new ApiError('BAD_REQUEST', 400, 'Registration: Name or surname is missing');
+    }
 
-	const createResultOk = await createNewUserRecord({
-		name: body.name,
-		surname: body.surname,
-		email: body.email,
-		passwordHash: passwordHash,
-		partition: partition
-	})
+    const createResultOk = await createNewUserRecord({
+        name: body.name,
+        surname: body.surname,
+        email: body.email,
+        passwordHash: passwordHash,
+        partition: partition
+    });
 
-	if (!createResultOk) {
-		throw new Error('Registration: update table failure.')
-	}
+    if (!createResultOk) {
+        throw new Error('Registration: update table failure.');
+    }
 
-	res.status(200).json({status: 'OK'});
+    res.status(200).json({status: 'OK'});
 });

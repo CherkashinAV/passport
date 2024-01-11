@@ -2,8 +2,7 @@ import got from 'got';
 import http from 'http';
 import {startServer, stopServer} from './test-server';
 import assert from 'assert';
-import {dbClient} from '../../app/lib/db-client';
-import {clear_db} from '../db-utils';
+import {clearDb} from '../db-utils';
 
 const client = got.extend({
     throwHttpErrors: false
@@ -22,7 +21,7 @@ describe('base tests of http-api', () => {
     });
 
     beforeEach(async () => {
-        await clear_db();
+        await clearDb();
     });
 
     it('should return 200 on /ping', async () => {

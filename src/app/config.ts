@@ -5,7 +5,7 @@ import process from 'process';
 dotenv.config();
 
 interface Config {
-    'port': string;
+    port: string;
     'logger.level': string;
     'logger.format': winston.Logform.Format;
     'logger.disable': boolean;
@@ -21,7 +21,7 @@ interface Config {
 }
 
 const prodConfig: Config = {
-    'port': process.env.APP_PORT ?? '8080',
+    port: process.env.APP_PORT ?? '8080',
     'logger.level': 'info',
     'logger.format': winston.format.json(),
     'logger.disable': false,

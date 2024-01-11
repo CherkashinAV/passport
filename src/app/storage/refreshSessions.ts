@@ -4,61 +4,64 @@ import {dbClient} from '../lib/db-client';
 import {RefreshSession} from '../types';
 
 export async function getUserRefreshSessions(userUid: string): Promise<RefreshSession[] | null> {
-	const {rows} = await dbClient.query(`--sql
+    const {rows} = await dbClient.query(
+        `--sql
 		SELECT * FROM refresh_sessions WHERE user_id = $1;
-	`, [userUid]);
+	`,
+        [userUid]
+    );
 
-	if (!rows || !rows.length) {
-		return null;
-	}
+    if (!rows || !rows.length) {
+        return null;
+    }
 
-	return rows.map((row) => convertRefreshSessionFromDBEntry(row));
+    return rows.map((row) => convertRefreshSessionFromDBEntry(row));
 }
 
 export async function getRefreshSessionByRefreshToken(
-	refreshToken: string,
-	fingerprint: string
+    refreshToken: string,
+    fingerprint: string
 ): Promise<RefreshSession | null> {
-	const {rows} = await dbClient.query(`--sql
+    const {rows} = await dbClient.query(
+        `--sql
 		SELECT * FROM refresh_sessions WHERE refresh_token = $1 and fingerprint = $2;
-	`, [refreshToken, fingerprint]);
+	`,
+        [refreshToken, fingerprint]
+    );
 
-	if (!rows || !rows.length) {
-		return null;
-	}
+    if (!rows || !rows.length) {
+        return null;
+    }
 
-	return convertRefreshSessionFromDBEntry(rows[0]);
+    return convertRefreshSessionFromDBEntry(rows[0]);
 }
 
 export async function createNewRefreshSession(args: {
-	userId: string,
-	userAgent?: string,
-	fingerprint: string,
-	refreshToken: string
+    userId: string;
+    userAgent?: string;
+    fingerprint: string;
+    refreshToken: string;
 }) {
-	const expiresIn = Date.now() + config['refreshSessions.Ttl'];
-	const query = `--sql
+    const expiresIn = Date.now() + config['refreshSessions.Ttl'];
+    const query = `--sql
 		INSERT INTO refresh_sessions
 		(user_id, user_agent, fingerprint, expires_in, refresh_token)
 		VALUES ($1, $2, $3, $4, $5)
 	`;
-	try {
-		await dbClient.query(query, [args.userId, args.userAgent, args.fingerprint, expiresIn, args.refreshToken]);
-	} catch (error){
-		return false;
-	}
+    try {
+        await dbClient.query(query, [args.userId, args.userAgent, args.fingerprint, expiresIn, args.refreshToken]);
+    } catch (error) {
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
-export async function deleteSession(args: {
-	userId: string,
-	fingerprint: string
-}) {
-	const query = `--sql
+export async function deleteSession(args: {userId: string; fingerprint: string}) {
+    const query = `--sql
 		DELETE FROM refresh_sessions
 		WHERE user_id = $1 AND fingerprint = $2
 	`;
 
-	await dbClient.query(query, [args.userId, args.fingerprint]);
+    await dbClient.query(query, [args.userId, args.fingerprint]);
 }

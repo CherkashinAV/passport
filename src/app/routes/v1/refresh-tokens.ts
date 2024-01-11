@@ -10,64 +10,64 @@ import {jwtManager} from '../../lib/jwt';
 import {findUserByPublicId} from '../../storage/users';
 
 const bodySchema = z.object({
-	fingerprint: z.string().uuid()
+    fingerprint: z.string().uuid()
 });
 
 export const refreshTokensHandler = asyncMiddleware(async (req: Request, res: Response) => {
-	const validationResult = bodySchema.safeParse(req.body);
+    const validationResult = bodySchema.safeParse(req.body);
 
-	if (!validationResult.success) {
-		throw new ApiError('BAD_REQUEST', 400, formatZodError(validationResult.error));
-	}
+    if (!validationResult.success) {
+        throw new ApiError('BAD_REQUEST', 400, formatZodError(validationResult.error));
+    }
 
-	const body = validationResult.data;
+    const body = validationResult.data;
 
-	const refreshToken = req.cookies['refreshToken'];
+    const refreshToken = req.cookies['refreshToken'];
 
-	const session = await getRefreshSessionByRefreshToken(refreshToken, body.fingerprint);
+    const session = await getRefreshSessionByRefreshToken(refreshToken, body.fingerprint);
 
-	if (!session) {
-		throw new ApiError('NOT_FOUND', 404, 'RefreshTokens: No session to refresh.')
-	}
+    if (!session) {
+        throw new ApiError('NOT_FOUND', 404, 'RefreshTokens: No session to refresh.');
+    }
 
-	if (session.expiresIn < Date.now()) {
-		throw new ApiError('TOKEN_EXPIRED', 403, 'RefreshTokens: refresh token expired.')
-	}
+    if (session.expiresIn < Date.now()) {
+        throw new ApiError('TOKEN_EXPIRED', 403, 'RefreshTokens: refresh token expired.');
+    }
 
-	await deleteSession({userId: session.userId, fingerprint: body.fingerprint});
+    await deleteSession({userId: session.userId, fingerprint: body.fingerprint});
 
-	const newRefreshToken = randomUUID()
+    const newRefreshToken = randomUUID();
 
-	const creationResult = await createNewRefreshSession({
-		userId: session.userId,
-		fingerprint: body.fingerprint,
-		refreshToken: newRefreshToken,
-		userAgent: req.headers['user-agent'] ?? 'none'
-	});
+    const creationResult = await createNewRefreshSession({
+        userId: session.userId,
+        fingerprint: body.fingerprint,
+        refreshToken: newRefreshToken,
+        userAgent: req.headers['user-agent'] ?? 'none'
+    });
 
-	if (!creationResult) {
-		throw new Error('RefreshTokens: create refreshSession failure.');
-	}
+    if (!creationResult) {
+        throw new Error('RefreshTokens: create refreshSession failure.');
+    }
 
-	const user = await findUserByPublicId(session.userId);
+    const user = await findUserByPublicId(session.userId);
 
-	if (!user) {
-		throw new Error('RefreshTokens: user not found.')
-	}
+    if (!user) {
+        throw new Error('RefreshTokens: user not found.');
+    }
 
-	const accessToken = jwtManager.generateJWTToken({
-		expiresIn: Date.now() + config['accessToken.expiresIn'],
-		role: user.role,
-		userId: user.publicId
-	});
+    const accessToken = jwtManager.generateJWTToken({
+        expiresIn: Date.now() + config['accessToken.expiresIn'],
+        role: user.role,
+        userId: user.publicId
+    });
 
-	res.cookie('refreshToken', refreshToken, {maxAge: config['refreshSessions.Ttl'], path: '/v1/auth'});
+    res.cookie('refreshToken', refreshToken, {maxAge: config['refreshSessions.Ttl'], path: '/v1/auth'});
 
-	res.status(200).json({
-		status: 'OK',
-		data: {
-			accessToken,
-			refreshToken: newRefreshToken
-		}
-	});
+    res.status(200).json({
+        status: 'OK',
+        data: {
+            accessToken,
+            refreshToken: newRefreshToken
+        }
+    });
 });

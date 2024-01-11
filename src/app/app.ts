@@ -4,7 +4,7 @@ import {v1Router} from './routes/v1';
 import {env, config} from './config';
 import {logger} from './lib/logger';
 
-export async function createApp(): Promise<Application> {
+export function createApp(): Application {
     const app: Application = express();
 
     return app
@@ -12,24 +12,26 @@ export async function createApp(): Promise<Application> {
         .get('/ping', pingMidleware)
         .use('/v1', v1Router)
         .use((_req: Request, res: Response) => res.sendStatus(404))
-        .use((err: any, req: Request, res: Response, _next: NextFunction) => {
+        .use((err: any, _req: Request, res: Response, _next: NextFunction) => {
             logger.error(err);
             res.sendStatus(500);
         });
 }
 
-export async function runApp(): Promise<void> {
+export function runApp(): void {
     const port = config.port;
     logger.info(env);
-    const app = await createApp();
+    const app = createApp();
     app.listen(port, () => {
         logger.info(`Server started on port ${port} (${env})`);
     });
 }
 
 if (require.main === module) {
-    runApp().catch((err) => {
+    try {
+        runApp();
+    } catch (err) {
         logger.error(err);
         process.exit();
-    })
+    }
 }

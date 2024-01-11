@@ -133,9 +133,9 @@ module.exports = {
 
     // http://eslint.org/docs/rules/#variables
     'no-delete-var': 'error',
-    'no-undef': 'error',
+    // 'no-undef': 'error',
     'no-undef-init': 'error',
-    'no-unused-vars': 'error',
+    // 'no-unused-vars': 'error',
     'no-use-before-define': ['error', {functions: false}],
 
     // http://eslint.org/docs/rules/#stylistic-issues

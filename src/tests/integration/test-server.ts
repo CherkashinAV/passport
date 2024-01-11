@@ -27,10 +27,10 @@ export function apiRequestFactory(url: URL, responseType: 'string' | 'json', opt
     const httpClient = got.extend({
         throwHttpErrors: false,
         ...options
-    })
+    });
 
     return {
-        get : async (query?: Record<string, string | undefined>) => {
+        get: async (query?: Record<string, string | undefined>) => {
             return httpClient.get(url, {
                 searchParams: query,
                 responseType: responseType === 'string' ? undefined : responseType,
@@ -43,8 +43,8 @@ export function apiRequestFactory(url: URL, responseType: 'string' | 'json', opt
                 json: body,
                 searchParams: query,
                 responseType: responseType === 'string' ? undefined : responseType,
-                retry: 0,
+                retry: 0
             });
         }
-    }
+    };
 }

@@ -50,7 +50,7 @@ define start-local-db =
 	@echo "building image..."
 	@cd .dev/database && docker build -t $(SERVICE_SLUG)-db .
 	@echo "starting a container..."
-	@cd .dev/database && docker compose up -d local-db 
+	@cd .dev/database && docker compose up -d $(SERVICE_SLUG)-db 
 	@exit
 endef
 

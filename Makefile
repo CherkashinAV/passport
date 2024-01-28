@@ -75,7 +75,7 @@ db.migrate:
 .PHONY: db.local-stop
 db.local-stop:
 	@echo "stopping databse container..."
-	@cd .dev/database && docker compose down local-db 
+	@cd .dev/database && docker compose down $(SERVICE_SLUG)-db 
 
 .PHONY: db.local-reset
 db.local-reset: DB_CONNECTION_NAME=passport

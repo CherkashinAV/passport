@@ -13,6 +13,7 @@ interface Config {
     'db.port': number;
     'db.user': string;
     'db.password': string;
+    'db.host': string;
     'hash.saltRounds': number;
     'refreshSessions.maxAmount': number;
     'refreshSessions.Ttl': number;
@@ -29,6 +30,7 @@ const prodConfig: Config = {
     'db.port': parseInt(process.env.DB_PORT!, 10),
     'db.user': process.env.DB_USER!,
     'db.password': process.env.DB_PASS!,
+    'db.host': 'localhost',
     'hash.saltRounds': 10,
     'refreshSessions.maxAmount': 5,
     'refreshSessions.Ttl': 256 * 60 * 60 * 1000,
@@ -41,7 +43,8 @@ const testConfig: Config = {
 };
 
 const devConfig: Config = {
-    ...prodConfig
+    ...prodConfig,
+    'db.host': process.env.DOCKER ? 'host.docker.internal' : 'localhost'
 };
 
 const ciConfig: Config = {

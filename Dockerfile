@@ -11,5 +11,5 @@ COPY . .
 RUN make build
 RUN npm prune --production
 
-EXPOSE 8080
-CMD ["node", "/out/app/app.js"]
+EXPOSE 8083
+CMD ["node", "./out/app/app.js"]

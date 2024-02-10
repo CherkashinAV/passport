@@ -8,6 +8,7 @@ import {randomUUID} from 'crypto';
 import {config} from '../../config';
 import {jwtManager} from '../../lib/jwt';
 import {findUserByPublicId} from '../../storage/users';
+import {logger} from '../../lib/logger';
 
 const bodySchema = z.object({
     fingerprint: z.string().uuid()
@@ -23,6 +24,7 @@ export const refreshTokensHandler = asyncMiddleware(async (req: Request, res: Re
     const body = validationResult.data;
 
     const refreshToken = req.cookies['refreshToken'];
+    logger.error(refreshToken);
 
     const session = await getRefreshSessionByRefreshToken(refreshToken, body.fingerprint);
 

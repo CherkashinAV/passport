@@ -4,20 +4,25 @@ import {ApiRequestSender, apiRequestFactory, startServer, stopServer} from './te
 import {clearDb, registerUser} from '../db-utils';
 import {createNewRefreshSession} from '../../app/storage/refreshSessions';
 import {dbClient} from '../../app/lib/db-client';
+import sinon from 'sinon';
 
-describe('/v1/logout', () => {
+describe.only('/v1/logout', () => {
     let server: http.Server;
     let url: string;
     let httpClient: ApiRequestSender;
+    let clock: sinon.SinonFakeTimers;
+    const now = new Date('2023-12-17T15:00:00');
 
     const defaultBody = {
-        userId: 'aaaaaaaa-f625-41ca-a353-068d6ed70fc5',
+        accessToken:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHBpcmVzSW4iOjE3MDI4MTQ0MDM2MDAsInJvbGUiOiJkZWZhdWx0IiwidXNlcklkIjoiYWFhYWFhYWEtZjYyNS00MWNhLWEzNTMtMDY4ZDZlZDcwZmM1IiwiaWF0IjoxNzAyODE0NDAwfQ.7FyCY_-21Bt92qwkOukT2R4yPupuIxAluAs8-okaHSY',
         fingerprint: '2e285a06-f625-41ca-a353-068d6ed70fc5'
     };
 
     before(async () => {
         [server, url] = await startServer();
         httpClient = apiRequestFactory(new URL(`${url}/v1/logout`), 'json');
+        clock = sinon.useFakeTimers({now, toFake: ['Date']});
     });
 
     after(async () => {
@@ -50,25 +55,14 @@ describe('/v1/logout', () => {
             assert.strictEqual(res.body.message, 'fingerprint:Invalid uuid');
         });
 
-        it('should throw 400 if userId is not provided', async () => {
+        it('should throw 400 if accessToken is not provided', async () => {
             const res = await httpClient.post({
                 ...defaultBody,
-                userId: undefined
+                accessToken: undefined
             });
 
             assert.strictEqual(res.statusCode, 400);
             assert.strictEqual(res.body.code, 'BAD_REQUEST');
-        });
-
-        it('should throw 400 if userId is not correct uuid', async () => {
-            const res = await httpClient.post({
-                ...defaultBody,
-                userId: 'aaa'
-            });
-
-            assert.strictEqual(res.statusCode, 400);
-            assert.strictEqual(res.body.code, 'BAD_REQUEST');
-            assert.strictEqual(res.body.message, 'userId:Invalid uuid');
         });
     });
 

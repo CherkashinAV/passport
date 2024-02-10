@@ -67,7 +67,6 @@ db.local-connect: CONNECTION_STRING=$(DB_CONNECTION_STRING)/$(DB_NAME)
 db.local-connect: db.connect
 
 .PHONY: db.migrate
-db.migrate: DB_CONNECTION_NAME=passport
 db.migrate:
 	@echo "migrating..."
 	@sleep 1

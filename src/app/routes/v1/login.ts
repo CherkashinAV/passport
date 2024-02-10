@@ -66,7 +66,7 @@ export const loginHandler = asyncMiddleware(async (req: Request, res: Response) 
         userId: user.publicId
     });
 
-    res.cookie('refreshToken', refreshToken, {maxAge: config['refreshSessions.Ttl'], path: '/v1/auth'});
+    res.cookie('refreshToken', refreshToken, {maxAge: config['refreshSessions.Ttl'], path: '/'});
 
     res.status(200).json({
         accessToken,

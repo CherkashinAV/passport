@@ -11,7 +11,7 @@ import {findUserByPublicId} from '../../storage/users';
 import {logger} from '../../lib/logger';
 
 const bodySchema = z.object({
-    fingerprint: z.string().uuid()
+    fingerprint: z.string()
 });
 
 export const refreshTokensHandler = asyncMiddleware(async (req: Request, res: Response) => {

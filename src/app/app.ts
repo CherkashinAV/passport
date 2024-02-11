@@ -3,12 +3,16 @@ import {pingMidleware, loggerMiddleware} from './middlewares';
 import {v1Router} from './routes/v1';
 import {env, config} from './config';
 import {logger} from './lib/logger';
+import cors from 'cors';
 
 export function createApp(): Application {
     const app: Application = express();
 
     return app
         .use(loggerMiddleware)
+        .use(cors({
+            origin: '*'
+        }))
         .get('/ping', pingMidleware)
         .use('/v1', v1Router)
         .use((_req: Request, res: Response) => res.sendStatus(404))

@@ -13,7 +13,7 @@ import {jwtManager} from '../../lib/jwt';
 const bodySchema = z.object({
     email: z.string().email(),
     password: passwordValidator,
-    fingerprint: z.string().uuid()
+    fingerprint: z.string()
 });
 
 export const loginHandler = asyncMiddleware(async (req: Request, res: Response) => {

@@ -8,7 +8,7 @@ import {jwtManager} from '../../lib/jwt';
 
 const bodySchema = z.object({
     accessToken: z.string(),
-    fingerprint: z.string().uuid()
+    fingerprint: z.string()
 });
 
 export const logoutHandler = asyncMiddleware(async (req: Request, res: Response) => {

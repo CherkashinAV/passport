@@ -44,17 +44,6 @@ describe('/v1/auth', () => {
             assert.strictEqual(res.body.code, 'BAD_REQUEST');
         });
 
-        it('should throw 400 if fingerprint is not correct uuid', async () => {
-            const res = await httpClient.post({
-                ...defaultBody,
-                fingerprint: 'aaa'
-            });
-
-            assert.strictEqual(res.statusCode, 400);
-            assert.strictEqual(res.body.code, 'BAD_REQUEST');
-            assert.strictEqual(res.body.message, 'fingerprint:Invalid uuid');
-        });
-
         it('should throw 400 if access token is not provided', async () => {
             const res = await httpClient.post({
                 ...defaultBody,

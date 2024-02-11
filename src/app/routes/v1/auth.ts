@@ -8,7 +8,7 @@ import {getUserRefreshSessions} from '../../storage/refreshSessions';
 
 const bodySchema = z.object({
     accessToken: z.string(),
-    fingerprint: z.string().uuid()
+    fingerprint: z.string()
 });
 
 export const authHandler = asyncMiddleware(async (req: Request, res: Response) => {

@@ -3,11 +3,11 @@ import {ApiError} from './api-error';
 import {formatZodError, passwordValidator} from './validators';
 import {Request, Response} from 'express';
 import {z} from 'zod';
-import {findUserByEmail, updatePassword} from '../../storage/users';
+import {findUserByEmail, findUserByPublicId, updatePassword} from '../../storage/users';
 import {hashManager} from '../../lib/hash';
 
 const bodySchema = z.object({
-    email: z.string().email(),
+    userId: z.string().uuid(),
     secretCode: z.string().uuid(),
     password: passwordValidator
 });
@@ -20,9 +20,8 @@ export const resetPasswordHandler = asyncMiddleware(async (req: Request, res: Re
     }
 
     const body = validationResult.data;
-    const partition = (req.query.partition as string) ?? 'global';
 
-    const user = await findUserByEmail(body.email, partition);
+    const user = await findUserByPublicId(body.userId);
 
     if (!user) {
         throw new ApiError('NOT_FOUND', 404, 'ResetPassword: No such users registered.');

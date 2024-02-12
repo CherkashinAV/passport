@@ -13,7 +13,7 @@ describe('/v1/reset_password', () => {
     let hashExpectation: sinon.SinonExpectation;
 
     const defaultBody = {
-        email: 'user@test.com',
+        userId: 'aaaaaaaa-f625-41ca-a353-068d6ed70fc5',
         password: 'qwerty',
         secretCode: '11111111-f625-41ca-a353-068d6ed70fc5'
     };
@@ -38,25 +38,25 @@ describe('/v1/reset_password', () => {
     });
 
     describe('check schema', () => {
-        it('should throw 400 if email was not provided', async () => {
+        it('should throw 400 if userId was not provided', async () => {
             const res = await httpClient.post({
                 ...defaultBody,
-                email: undefined
+                userId: undefined
             });
 
             assert.strictEqual(res.statusCode, 400);
             assert.strictEqual(res.body.code, 'BAD_REQUEST');
         });
 
-        it('should throw 400 if email has incorrect format', async () => {
+        it('should throw 400 if userId is not uuid', async () => {
             const res = await httpClient.post({
                 ...defaultBody,
-                email: '@test.ru'
+                userId: '123'
             });
 
             assert.strictEqual(res.statusCode, 400);
             assert.strictEqual(res.body.code, 'BAD_REQUEST');
-            assert.strictEqual(res.body.message, 'email:Invalid email');
+            assert.strictEqual(res.body.message, 'userId:Invalid uuid');
         });
 
         it('should throw 400 if password was not provided', async () => {

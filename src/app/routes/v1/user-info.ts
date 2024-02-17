@@ -7,8 +7,7 @@ import {jwtManager} from '../../lib/jwt';
 import {findUserByPublicId} from '../../storage/users';
 
 const bodySchema = z.object({
-    accessToken: z.string(),
-    userId: z.string().uuid()
+    accessToken: z.string()
 });
 
 export const userInfoHandler = asyncMiddleware(async (req: Request, res: Response) => {
@@ -32,7 +31,7 @@ export const userInfoHandler = asyncMiddleware(async (req: Request, res: Respons
         throw new ApiError('TOKEN_EXPIRED', 403, 'UserInfo: access token expired.');
     }
 
-    const user = await findUserByPublicId(body.userId);
+    const user = await findUserByPublicId(tokenData.userId);
 
     if (!user) {
         throw new ApiError('NOT_FOUND', 404, 'UserInfo: user not found.')

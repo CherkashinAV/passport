@@ -6,7 +6,7 @@ import {ApiError} from './api-error';
 import {findUserByEmail} from '../../storage/users';
 import {hashManager} from '../../lib/hash';
 import {createNewRefreshSession, getUserRefreshSessions} from '../../storage/refreshSessions';
-import {config} from '../../config';
+import {config, env} from '../../config';
 import {randomUUID} from 'crypto';
 import {jwtManager} from '../../lib/jwt';
 
@@ -66,7 +66,7 @@ export const loginHandler = asyncMiddleware(async (req: Request, res: Response) 
         userId: user.publicId
     });
 
-    res.cookie('refreshToken', refreshToken, {maxAge: config['refreshSessions.Ttl'], path: '/'});
+    res.cookie('refreshToken', refreshToken, {maxAge: config['refreshSessions.Ttl'], path: '/', secure: env === 'production', httpOnly: true});
 
     res.status(200).json({
         accessToken,

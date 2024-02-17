@@ -33,6 +33,7 @@ export const refreshTokensHandler = asyncMiddleware(async (req: Request, res: Re
     }
 
     if (session.expiresIn < Date.now()) {
+        deleteSession({userId: session.userId, fingerprint: body.fingerprint});
         throw new ApiError('TOKEN_EXPIRED', 403, 'RefreshTokens: refresh token expired.');
     }
 

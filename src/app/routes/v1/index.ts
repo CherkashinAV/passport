@@ -12,6 +12,7 @@ import {registrationInviteHandler} from './registration-invite';
 import {passwordForgotHandler} from './password-forgot';
 import {resetPasswordHandler} from './reset-password';
 import {userInfoHandler} from './user-info';
+import {usersHandler} from './users';
 
 export const v1Router: Router = Router()
     .use(bodyParser.json())
@@ -22,7 +23,8 @@ export const v1Router: Router = Router()
     .post('/registration_invite', registrationInviteHandler)
     .post('/password_forgot', passwordForgotHandler)
     .post('/reset_password', resetPasswordHandler)
-    .post('/user_info', userInfoHandler)
+    .get('/user_info', userInfoHandler)
+    .get('/users', usersHandler)
     .use(cookieParser())
     .post('/refresh_tokens', refreshTokensHandler)
     .use((error: Error, _req: Request, res: Response, next: NextFunction) => {

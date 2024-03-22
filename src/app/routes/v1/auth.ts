@@ -5,6 +5,7 @@ import {formatZodError} from './validators';
 import {ApiError} from './api-error';
 import {jwtManager} from '../../lib/jwt';
 import {getUserRefreshSessions} from '../../storage/refreshSessions';
+import {logger} from '../../lib/logger';
 
 const bodySchema = z.object({
     accessToken: z.string(),
@@ -20,6 +21,7 @@ export const authHandler = asyncMiddleware(async (req: Request, res: Response) =
 
     const body = validationResult.data;
 
+    logger.error(body.accessToken);
     const verifyTokenResult = jwtManager.verifyJWTToken(body.accessToken);
 
     if (!verifyTokenResult.ok) {

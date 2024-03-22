@@ -28,10 +28,6 @@ export const logoutHandler = asyncMiddleware(async (req: Request, res: Response)
 
     const tokenData = verifyTokenResult.payload!;
 
-    if (tokenData.expiresIn <= Date.now()) {
-        throw new ApiError('TOKEN_EXPIRED', 403, 'Auth: access token expired.');
-    }
-
     const sessions = await getUserRefreshSessions(tokenData.userId);
 
     if (!sessions || !sessions.find((session) => session.fingerprint === body.fingerprint)) {

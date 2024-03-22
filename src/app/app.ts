@@ -11,7 +11,7 @@ export function createApp(): Application {
     return app
         .use(loggerMiddleware)
         .use(cors({
-            origin: 'http://localhost:3000',
+            origin: ['http://localhost:3000', 'http://localhost:8080'],
         }))
         .get('/ping', pingMidleware)
         .use('/v1', v1Router)

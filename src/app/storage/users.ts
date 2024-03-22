@@ -128,3 +128,15 @@ export async function updatePassword(args: {userId: string; passwordHash: string
 
     return true;
 }
+
+export async function findUsersByRole(role: string, partition: string): Promise<string[]> {
+    const {rows} = await dbClient.query<{public_id: string}>(
+        `--sql
+		SELECT public_id FROM users
+		WHERE role = $1 AND partition = $2;
+	`,
+        [role, partition]
+    );
+
+    return rows.map((row) => row.public_id);
+}

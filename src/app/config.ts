@@ -19,6 +19,7 @@ interface Config {
     'refreshSessions.Ttl': number;
     'jwt.privateKey': string;
     'accessToken.expiresIn': number;
+    'sender.baseUrl': string;
 }
 
 const prodConfig: Config = {
@@ -35,7 +36,8 @@ const prodConfig: Config = {
     'refreshSessions.maxAmount': 5,
     'refreshSessions.Ttl': 256 * 60 * 60 * 1000,
     'jwt.privateKey': process.env.PRIVATE_KEY!,
-    'accessToken.expiresIn': 20 * 60 * 1000
+    'accessToken.expiresIn': 20 * 60 * 1000,
+    'sender.baseUrl': ''
 };
 
 const testConfig: Config = {
@@ -44,7 +46,8 @@ const testConfig: Config = {
 
 const devConfig: Config = {
     ...prodConfig,
-    'db.host': process.env.DOCKER ? 'host.docker.internal' : 'localhost'
+    'db.host': process.env.DOCKER ? 'host.docker.internal' : 'localhost',
+    'sender.baseUrl': process.env.DOCKER ? 'http://host.docker.internal:8082/v1/' : 'http://localhost:8082/v1/'
 };
 
 const ciConfig: Config = {

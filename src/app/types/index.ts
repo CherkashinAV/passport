@@ -4,6 +4,7 @@ export interface User {
     role: string;
     name: string;
     surname: string;
+    patronymic: string;
     email: string;
     password?: string;
     secretCode: string;
@@ -22,3 +23,16 @@ export interface RefreshSession {
     expiresIn: number;
     createdAt: Date;
 }
+
+type OkResult<T = null> = {
+	ok: true,
+	value: T
+};
+
+type ErrorResult<T = string> = {
+	ok: false,
+	error: T
+};
+
+export type Result<T, E> = OkResult<T> | ErrorResult<E>;
+export type AsyncResult<T, E> = Promise<Result<T, E>>;

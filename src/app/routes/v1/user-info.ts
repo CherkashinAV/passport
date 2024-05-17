@@ -29,6 +29,7 @@ export const userInfoHandler = asyncMiddleware(async (req: Request, res: Respons
         data: {
             name: user.name,
             surname: user.surname,
+            patronymic: user.patronymic,
             email: user.email,
             role: user.role,
             uid: user.publicId,

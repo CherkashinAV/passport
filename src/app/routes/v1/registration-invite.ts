@@ -5,14 +5,22 @@ import {ApiError} from './api-error';
 import {Request, Response} from 'express';
 import {jwtManager} from '../../lib/jwt';
 import {findUserByEmail, findUserByPublicId, insertInvitation} from '../../storage/users';
+import {senderProvider} from '../../providers/sender';
 
 const bodySchema = z.object({
     email: z.string().email(),
     name: nameValidator,
     surname: surnameValidator,
-    role: z.string().optional(),
+    patronymic: z.string(),
+    role: z.string().default('default'),
     linkToRegisterForm: z.string().url(),
-    accessToken: z.string()
+    accessToken: z.string(),
+    organizationName: z.string(),
+    senderOptions: z.object({
+        email: z.string().email(),
+        emailSecret: z.string(),
+        templateUid: z.string().uuid()
+    })
 });
 
 export const registrationInviteHandler = asyncMiddleware(async (req: Request, res: Response) => {
@@ -65,23 +73,35 @@ export const registrationInviteHandler = asyncMiddleware(async (req: Request, re
         );
     }
 
-    const secretCode = await insertInvitation({
+    const data = await insertInvitation({
         email: body.email,
         name: body.name,
         surname: body.surname,
+        patronymic: body.patronymic,
         partition: moderatorUser.partition,
         role: body.role ?? 'default'
     });
 
-    if (!secretCode) {
+    if (!data) {
         throw new Error('RegistrationInvite: Invitation creation failed');
     }
 
-    const inviteUrl = new URL(`/${secretCode}`, body.linkToRegisterForm);
+    const inviteUrl = body.linkToRegisterForm + `/${data.secret}`;
 
-    //TODO: send email with link to register
+    await senderProvider.send({
+        srcData: {
+            email: body.senderOptions.email,
+            secretCode: body.senderOptions.emailSecret
+        },
+        dstEmail: body.email,
+        templateId: body.senderOptions.templateUid,
+        options: {
+            organizationName: body.organizationName,
+            registerLink: inviteUrl
+        }
+    })
 
     res.status(200).json({
-        status: 'OK'
+        uid: data.publicId
     });
 });

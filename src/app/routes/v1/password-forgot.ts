@@ -5,10 +5,16 @@ import {formatZodError} from './validators';
 import {z} from 'zod';
 import {findUserByEmail, storeNewSecret} from '../../storage/users';
 import {randomUUID} from 'crypto';
+import {senderProvider} from '../../providers/sender';
 
 const bodySchema = z.object({
     email: z.string().email(),
-    linkToResetForm: z.string().url()
+    linkToResetForm: z.string().url(),
+    senderOptions: z.object({
+        email: z.string().email(),
+        emailSecret: z.string(),
+        templateUid: z.string().uuid()
+    })
 });
 
 export const passwordForgotHandler = asyncMiddleware(async (req: Request, res: Response) => {
@@ -38,9 +44,19 @@ export const passwordForgotHandler = asyncMiddleware(async (req: Request, res: R
         throw new Error('PasswordForgot: failed to store new secret');
     }
 
-    const resetUrl = new URL(`/${secretCode}`, body.linkToResetForm);
+    const resetUrl = body.linkToResetForm + `/${user.publicId}` + `/${secretCode}`;
 
-    //TODO: send email with restore link
+    await senderProvider.send({
+        srcData: {
+            email: body.senderOptions.email,
+            secretCode: body.senderOptions.emailSecret
+        },
+        dstEmail: body.email,
+        templateId: body.senderOptions.templateUid,
+        options: {
+            resetUrl
+        }
+    })
 
     res.status(200).json({
         status: 'OK'

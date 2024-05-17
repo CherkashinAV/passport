@@ -7,6 +7,7 @@ CREATE TABLE users (
 	name text NOT NULL,
 	surname text NOT NULL,
 	email text NOT NULL,
+	patronymic text,
 	password text DEFAULT NULL,
 	secret_code uuid NOT NULL DEFAULT gen_random_uuid(),
 	secret_active boolean NOT NULL DEFAULT false,

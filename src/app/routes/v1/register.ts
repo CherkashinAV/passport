@@ -11,6 +11,7 @@ const bodySchema = z.object({
     password: passwordValidator,
     name: nameValidator.optional(),
     surname: surnameValidator.optional(),
+    patronymic: z.string().optional(),
     invitationCode: z.string().uuid().optional()
 });
 
@@ -63,6 +64,7 @@ export const registerHandler = asyncMiddleware(async (req: Request, res: Respons
     const createResultOk = await createNewUserRecord({
         name: body.name,
         surname: body.surname,
+        patronymic: body.patronymic,
         email: body.email,
         passwordHash: passwordHash,
         partition: partition

@@ -3,11 +3,12 @@ import asyncMiddleware from 'middleware-async';
 import {z} from 'zod';
 import {formatZodError} from './validators';
 import {ApiError} from './api-error';
-import {findUserByPublicId, findUsersByRole} from '../../storage/users';
+import {findUsersByRole} from '../../storage/users';
 
 const querySchema = z.object({
     partition: z.string(),
-	role: z.string()
+	role: z.string(),
+    search: z.string().optional()
 });
 
 export const usersHandler = asyncMiddleware(async (req: Request, res: Response) => {
@@ -19,7 +20,7 @@ export const usersHandler = asyncMiddleware(async (req: Request, res: Response) 
 
     const query = validationResult.data;
 
-    const users = await findUsersByRole(query.role, query.partition);
+    const users = await findUsersByRole(query.role, query.partition, query.search);
 
     res.status(200).json({
         status: 'OK',
